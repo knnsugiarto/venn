@@ -1,0 +1,141 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-card: 20px;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-paper: var(--paper);
+  --color-oat: var(--oat);
+  --color-sand: var(--sand);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-stone: var(--stone);
+  --color-clay: var(--clay);
+  --color-clay-ink: var(--clay-ink);
+  --color-clay-pale: var(--clay-pale);
+  --color-tile: var(--tile);
+}
+
+:root {
+  --radius: 0.75rem;
+  --paper: oklch(0.982 0.006 95);   /* #FAF9F5 */
+  --oat: oklch(0.948 0.011 92);     /* #F0EEE6 */
+  --sand: oklch(0.923 0.014 92);    /* #E8E6DC */
+  --ink: oklch(0.183 0.002 106);    /* #141413 */
+  --ink-soft: oklch(0.47 0.008 90); /* #5E5D59 */
+  --stone: oklch(0.611 0.011 97);   /* #87867F */
+  --clay: oklch(0.672 0.131 38.8);  /* #D97757 */
+  --clay-ink: oklch(0.52 0.14 37);  /* #A9472A */
+  --clay-pale: oklch(0.91 0.035 40);/* #F5DDD3 */
+  --tile: oklch(1 0 0);
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--oat);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--paper);
+  --secondary: var(--paper);
+  --secondary-foreground: var(--ink);
+  --muted: var(--oat);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--clay-pale);
+  --accent-foreground: var(--ink);
+  --destructive: var(--clay-ink);
+  --destructive-foreground: var(--paper);
+  --border: var(--sand);
+  --input: var(--sand);
+  --ring: var(--clay);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  :focus-visible { outline: 2px solid var(--clay); outline-offset: 2px; }
+  h1, h2, .font-display { font-family: var(--font-display); letter-spacing: 0; line-height: 1.1; }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-ink px-6 text-base font-medium text-paper transition-colors disabled:opacity-40;
+  }
+  .btn-primary:hover:not(:disabled) { background: oklch(0.3 0.004 106); }
+  .btn-secondary {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-sand bg-paper px-5 text-base font-medium text-ink transition-colors hover:bg-oat;
+  }
+  .btn-quiet {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-3 text-base font-medium text-ink-soft underline-offset-4 hover:text-ink hover:underline;
+  }
+  .label-caps { @apply text-xs font-semibold uppercase tracking-[0.08em] text-ink-soft; }
+  .chip { @apply inline-block rounded-full bg-clay-pale px-3 py-1 text-sm text-ink; }
+  .field {
+    @apply w-full rounded-[14px] border border-sand bg-oat px-4 py-3 text-base text-ink placeholder:text-ink-soft/70;
+  }
+}
+
+/* Motion — all CSS, all switched off for reduced motion. */
+@keyframes drift-l { 0%,100% { transform: translate(0,0) } 50% { transform: translate(-3px,2px) } }
+@keyframes drift-r { 0%,100% { transform: translate(0,0) } 50% { transform: translate(3px,-2px) } }
+@keyframes slide-l { from { transform: translateX(-20px) } to { transform: translateX(0) } }
+@keyframes slide-r { from { transform: translateX(20px) } to { transform: translateX(0) } }
+@keyframes breathe { 0%,100% { opacity: .55 } 50% { opacity: 1 } }
+@keyframes lens-pop { from { transform: scale(.6); opacity: 0 } to { transform: scale(1); opacity: 1 } }
+@keyframes fade-up { from { transform: translateY(8px); opacity: 0 } to { transform: none; opacity: 1 } }
+@keyframes burst { from { transform: translate(0,0) scale(1); opacity: 1 } to { transform: translate(var(--dx), var(--dy)) scale(.4); opacity: 0 } }
+@keyframes pulse-once { 0% { transform: scale(1) } 50% { transform: scale(1.08) } 100% { transform: scale(1) } }
+
+.anim-drift-l { animation: drift-l 6s ease-in-out infinite; }
+.anim-drift-r { animation: drift-r 6s ease-in-out infinite 1.5s; }
+.anim-slide-l { animation: slide-l 700ms ease-out both, drift-l 3s ease-in-out 700ms infinite; }
+.anim-slide-r { animation: slide-r 700ms ease-out both, drift-r 3s ease-in-out 700ms infinite; }
+.anim-breathe { animation: breathe 1.6s ease-in-out infinite; }
+.anim-lens { transform-box: fill-box; transform-origin: center; animation: lens-pop 450ms cubic-bezier(.34,1.56,.64,1) both; }
+.anim-fade-up { animation: fade-up 400ms ease-out 250ms both; }
+.anim-burst { animation: burst 600ms ease-out both; }
+.anim-pulse { animation: pulse-once 600ms ease-in-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .anim-burst { display: none; }
+}
+
+/* Your Circle: a finished theme's arc fills in over 400ms. */
+@keyframes circle-fill { from { stroke-width: 2.5; opacity: 0.4; } to { stroke-width: 9; opacity: 1; } }
+.circle-seg-done { animation: circle-fill 400ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .circle-seg-done { animation: none; } }
