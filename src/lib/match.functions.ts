@@ -25,7 +25,8 @@ export const matchCards = createServerFn({ method: "POST" })
     if (!cardIsReady(a) || !cardIsReady(b)) return { ok: false, error: "That card needs a few more answers.", canUseDemo: false };
     if (a.id === b.id) return { ok: false, error: "That's your own card!", canUseDemo: false };
 
-    const apiKey = process.env["ANTHROPIC_API_KEY"];
+    // Trim: a key pasted with a trailing space or newline is otherwise rejected.
+    const apiKey = process.env["ANTHROPIC_API_KEY"]?.trim();
     if (mode === "demo" || !apiKey) {
       const out = demoMatch(a, b, variant);
       const g = checkMatch(out, a, b, []);
@@ -33,7 +34,7 @@ export const matchCards = createServerFn({ method: "POST" })
       return { ok: true, result: g.result, source: "demo", notice: apiKey ? null : "Claude isn't connected yet, so this is the simple demo matcher." };
     }
 
-    const { matchWithClaude, ClaudeError } = await import("./claude.server");
+    const { matchWithClaude, ClaudeError, CLAUDE_ERROR_MESSAGES } = await import("./claude.server");
     try {
       const result = await checkedAttempts(a, b, avoid,
         problems => matchWithClaude(a, b, variant, avoid, problems, apiKey),
@@ -43,9 +44,13 @@ export const matchCards = createServerFn({ method: "POST" })
       console.error("match: guard failed twice");
       return { ok: false, error: "Claude's answer didn't pass our checks. Try again.", canUseDemo: true };
     } catch (e) {
-      const kind = e instanceof ClaudeError ? e.kind : "unknown";
-      console.error("match: claude error", kind); // error type only, never card text
-      const msg = kind === "timeout" ? "Claude took too long. Try again." : kind === "busy" ? "Claude is busy. Try again in a moment." : "Venn can't reach Claude right now.";
-      return { ok: false, error: msg, canUseDemo: true };
+      // Log the kind plus Anthropic's status and error message (never card text or
+      // the key), so "Logs" in Vercel shows exactly what went wrong.
+      if (e instanceof ClaudeError) {
+        console.error("match: claude error", e.kind, e.detail);
+        return { ok: false, error: CLAUDE_ERROR_MESSAGES[e.kind], canUseDemo: true };
+      }
+      console.error("match: claude error unknown", e instanceof Error ? e.name : typeof e);
+      return { ok: false, error: "Venn can't reach Claude right now. Try again.", canUseDemo: true };
     }
   });
