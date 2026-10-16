@@ -14,11 +14,13 @@ const styleWords = (text: string) => normalise(text).replace(/[^\p{L}\p{N}'\s]/g
 export function checkStyle(output: VennResult, a: Card, b: Card): string[] {
   const issues = new Set<string>();
   const answers = [...answerList(a, "A"), ...answerList(b, "B")].map(x => styleWords(x.text).split(" "));
-  const phrases = answers.flatMap(words => words.slice(0, Math.max(0, words.length - 5)).map((_, i) => words.slice(i, i + 6).join(" ")));
+  // Using people's own words is good (it keeps starters specific); pasting a whole
+  // long answer in is not. So only runs of 8+ copied words count as pasting.
+  const phrases = answers.flatMap(words => words.slice(0, Math.max(0, words.length - 7)).map((_, i) => words.slice(i, i + 8).join(" ")));
   for (const text of [output.headline, output.detail, ...output.starters.map(s => s.text), output.challenge.text]) {
     if (/["“”„«»]/u.test(text)) issues.add("S1: Don't put answers in quotation marks; weave them in.");
     const normal = styleWords(text);
-    if (phrases.some(p => (` ${normal} `).includes(` ${p} `))) issues.add("S2: Don't copy answers word for word; say it in your own words.");
+    if (phrases.some(p => (` ${normal} `).includes(` ${p} `))) issues.add("S2: Don't paste a whole answer in; use their words inside your own sentence.");
     for (const phrase of STOCK_PHRASES) if (normal.includes(styleWords(phrase))) issues.add(`S3: Avoid the stock phrase '${phrase}'.`);
   }
   const beginnings = output.starters.map(s => styleWords(s.text).split(" ").slice(0, 2).join(" "));

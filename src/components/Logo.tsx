@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { House } from "lucide-react";
 
 export function LogoMark({ className = "h-7 w-11" }: { className?: string }) {
   // Circles r=28, centres 28 apart, so the lens fits exactly.
@@ -18,7 +19,10 @@ export function Header() {
         <LogoMark />
         <span className="font-display text-2xl font-semibold">venn</span>
       </Link>
-      <Link to="/privacy" className="btn-quiet text-sm">Privacy</Link>
+      {/* Always a visible way home from any step (the logo alone is easy to miss). */}
+      <Link to="/" className="btn-quiet -mr-3 text-sm font-medium" aria-label="Back to home">
+        <House size={18} strokeWidth={1.75} aria-hidden="true" /> Home
+      </Link>
     </header>
   );
 }

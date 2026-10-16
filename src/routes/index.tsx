@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Venn · Skip the small talk" },
-      { name: "description", content: "Fill your circle once, scan someone, and get the surprising thing you two have in common." },
+      { name: "description", content: "Make your card, scan someone, and get the surprising thing you two have in common." },
       { property: "og:title", content: "Venn · Skip the small talk" },
       { property: "og:description", content: "Scan each other's code. Get the thing you share and three questions only you two could ask." },
       { property: "og:type", content: "website" },
@@ -40,7 +40,7 @@ export function Home() {
     return (
       <Page minimal>
         <MyCode profile={profile} celebrate={!!ready} />
-        <ThemeGrid profile={profile} title="Fill your circle" />
+        <ThemeGrid profile={profile} title="Expand your circle (Optional)" />
         {clear}
       </Page>
     );
@@ -56,7 +56,7 @@ export function Home() {
           </p>
           <Link to="/make" className="btn-primary mt-6">Finish in 30 seconds</Link>
         </div>
-        <ThemeGrid profile={profile} title="Fill your circle" />
+        <ThemeGrid profile={profile} title="Expand your circle (Optional)" />
         {clear}
       </Page>
     );

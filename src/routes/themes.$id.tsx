@@ -15,10 +15,10 @@ export const Route = createFileRoute("/themes/$id")({
     const name = isPackId(params.id) ? getPack(params.id).name : "Theme";
     return {
       meta: [
-        { title: `${name} · Fill your circle · Venn` },
+        { title: `${name} · Expand your circle · Venn` },
         { name: "description", content: `Five quick taps and a line in your own words about ${name.toLowerCase()}.` },
         { property: "og:title", content: `${name} · Venn` },
-        { property: "og:description", content: "Fill your circle. More to overlap with." },
+        { property: "og:description", content: "Expand your circle (optional). More to overlap with." },
         { property: "og:type", content: "website" },
         { name: "twitter:card", content: "summary" },
       ],

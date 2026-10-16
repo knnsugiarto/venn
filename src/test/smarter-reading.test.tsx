@@ -70,9 +70,11 @@ describe("style is separate from facts", () => {
     expect(g.ok).toBe(true); expect(g.problems).toEqual([]); expect(g.styleProblems.join()).toContain("S1:");
   });
   it("allows apostrophes", () => expect(checkMatch({ ...good(), detail: "You're in for a good chat." }, a, b).styleProblems).toEqual([]));
-  it("catches six-word copies across case and punctuation, but allows five", () => {
-    expect(checkMatch({ ...good(), detail: "PASTA, after a walk around the!" }, a, b).styleProblems.join()).toContain("S2:");
-    expect(checkMatch({ ...good(), detail: "Pasta after a walk around" }, a, b).styleProblems).toEqual([]);
+  it("catches eight-word pastes across case and punctuation, but allows seven", () => {
+    const long = createCard({ id: "samaaaa1", n: "Sam", c: "", a: [["fd", "Pasta after a walk around the museum at night"], ...a.a.slice(1)] });
+    const out = () => demoMatch(long, b);
+    expect(checkMatch({ ...out(), detail: "PASTA, after a walk around the museum at!" }, long, b).styleProblems.join()).toContain("S2:");
+    expect(checkMatch({ ...out(), detail: "Pasta after a walk around the museum" }, long, b).styleProblems).toEqual([]);
   });
   it.each(STOCK_PHRASES)("flags stock phrase %s", phrase => expect(checkMatch({ ...good(), detail: phrase.toUpperCase() }, a, b).styleProblems.join()).toContain("S3:"));
   it("rejects repeated two-word openings", () => {

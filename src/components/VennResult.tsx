@@ -122,7 +122,7 @@ export function VennResultView({ me, them, result, demo, notice, onAnother, onSh
           <p className="font-display py-3 text-xl font-medium">That's plenty of help. Go talk!</p>
         )}
         {nudge && (
-          <Link to="/" hash="themes" className="block py-2 text-sm text-ink-soft underline">Fill your circle for sharper Venns</Link>
+          <Link to="/" hash="themes" className="block py-2 text-sm text-ink-soft underline">Expand your circle for sharper Venns (optional)</Link>
         )}
         <button className="btn-quiet" onClick={onShowCode}>Show my code</button>
       </div>
