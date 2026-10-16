@@ -84,7 +84,9 @@ export async function matchWithClaude(
       },
       body: JSON.stringify({
         model,
-        max_tokens: 1400,
+        // Generous: a reply cut off mid-JSON is unreadable. Haiku output is cheap
+        // (about $0.002 for 4,000 tokens), and Claude stops early on its own.
+        max_tokens: 4000,
         system: SYSTEM_PROMPT,
         messages: [{ role: "user", content: buildMatchMessage(a, b, variant, avoid, problems) }],
         output_config: { format: { type: "json_schema", schema: CLAUDE_JSON_SCHEMA } },

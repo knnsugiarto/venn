@@ -36,8 +36,21 @@ export const matchCards = createServerFn({ method: "POST" })
 
     const { matchWithClaude, ClaudeError, CLAUDE_ERROR_MESSAGES } = await import("./claude.server");
     try {
+      // An unreadable reply (cut off, refused, wrong shape) is usually a one-off,
+      // so ask once more before giving up.
+      const generate = async (problems?: string[]) => {
+        try {
+          return await matchWithClaude(a, b, variant, avoid, problems, apiKey);
+        } catch (e) {
+          if (e instanceof ClaudeError && e.kind === "bad_reply") {
+            console.error("match: claude error bad_reply (retrying)", e.detail);
+            return matchWithClaude(a, b, variant, avoid, problems, apiKey);
+          }
+          throw e;
+        }
+      };
       const result = await checkedAttempts(a, b, avoid,
-        problems => matchWithClaude(a, b, variant, avoid, problems, apiKey),
+        generate,
         codes => { if (codes.length) console.info("match: style", codes.join(",")); });
       if (result) return { ok: true, result, source: "claude", notice: null };
       setResponseStatus(502);
@@ -48,7 +61,10 @@ export const matchCards = createServerFn({ method: "POST" })
       // the key), so "Logs" in Vercel shows exactly what went wrong.
       if (e instanceof ClaudeError) {
         console.error("match: claude error", e.kind, e.detail);
-        return { ok: false, error: CLAUDE_ERROR_MESSAGES[e.kind], canUseDemo: true };
+        // For unreadable or rejected replies, show a short code so the team can see
+        // the cause on the phone. It holds a status, stop reason or field names only.
+        const code = e.kind === "bad_reply" || e.kind === "rejected" ? ` (code: ${e.detail.slice(0, 80)})` : "";
+        return { ok: false, error: CLAUDE_ERROR_MESSAGES[e.kind] + code, canUseDemo: true };
       }
       console.error("match: claude error unknown", e instanceof Error ? e.name : typeof e);
       return { ok: false, error: "Venn can't reach Claude right now. Try again.", canUseDemo: true };

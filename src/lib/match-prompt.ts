@@ -48,6 +48,8 @@ Some people also answered quick multiple-choice theme packs (answer IDs like A-f
 - Two people picking the same option is only worth mentioning if it connects to something specific one of them wrote.
 - A quote from a pack answer must be copied exactly from the option text.
 
+Readings: write one reading for each answer you actually cite, and no others (usually 4 to 8). Never write readings for every answer on the cards. Keep each gloss to a few words.
+
 Evidence (checked by code, never shown to the students):
 - Every item cites exactly one answer from each person: an answer_id (A<n> or A-<pack><n>, B<n> or B-<pack><n>; only IDs on the cards) and a "quote" of 1 to 6 words copied exactly, character for character, from that answer. This is hidden evidence for our checker. It is NOT how you write the visible text: the visible text never uses quotation marks.
 

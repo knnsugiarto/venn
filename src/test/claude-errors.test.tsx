@@ -100,3 +100,32 @@ describe("Claude errors say what actually went wrong", () => {
     expect((e as ClaudeError).detail).not.toContain("secret answer text");
   });
 });
+
+describe("unreadable replies explain themselves", () => {
+  it("a cut-off reply reports stop_reason max_tokens", async () => {
+    const reply = JSON.stringify({
+      content: [{ type: "text", text: '{"readings": [' }],
+      stop_reason: "max_tokens",
+    });
+    const e = await matchWithClaude(a, b, 0, [], undefined, "k", fake(200, reply)).catch(
+      (x: unknown) => x,
+    );
+    expect((e as ClaudeError).kind).toBe("bad_reply");
+    expect((e as ClaudeError).detail).toBe("stop_reason max_tokens");
+  });
+  it("asks Claude for a long enough reply", async () => {
+    let sent = "";
+    const capture = (async (_url: string, init: { body: string }) => {
+      sent = init.body;
+      return new Response(
+        JSON.stringify({
+          content: [{ type: "text", text: JSON.stringify(demoMatch(a, b)) }],
+          stop_reason: "end_turn",
+        }),
+        { status: 200 },
+      );
+    }) as unknown as typeof fetch;
+    await matchWithClaude(a, b, 0, [], undefined, "k", capture);
+    expect((JSON.parse(sent) as { max_tokens: number }).max_tokens).toBeGreaterThanOrEqual(4000);
+  });
+});
